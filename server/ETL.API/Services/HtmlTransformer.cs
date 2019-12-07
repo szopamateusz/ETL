@@ -1,19 +1,22 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using ETL.API.Models;
 using HtmlAgilityPack;
+using Newtonsoft.Json;
 
 namespace ETL.API.Services
 {
     public interface IHtmlTransformer
     {
-        void Transform(string filePath);
+        Task Transform(string filePath);
     }
 
     public class HtmlTransformer : IHtmlTransformer
     {
-        public void Transform(string filePath)
+        public async Task Transform(string filePath)
         {
             var doc = new HtmlDocument();
             doc.Load(filePath);
@@ -46,6 +49,10 @@ namespace ETL.API.Services
                     ReviewText = reviewText,
                 });
             }
+
+            var serializedData = JsonConvert.SerializeObject(reviews);
+
+            await File.WriteAllTextAsync(Environment.CurrentDirectory + @"\transformed.txt", serializedData);
         }
     }
 }

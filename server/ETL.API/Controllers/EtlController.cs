@@ -54,7 +54,7 @@ namespace ETL.API.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> Transform()
         {
-            _htmlTransformer.Transform(Environment.CurrentDirectory + @"\webpage.txt");
+            await _htmlTransformer.Transform(Environment.CurrentDirectory + @"\webpage.txt");
 
             return Ok();
         }
