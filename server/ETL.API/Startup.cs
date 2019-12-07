@@ -1,10 +1,10 @@
+using ETL.API.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
-using Swashbuckle.AspNetCore.Swagger;
 
 namespace ETL.API
 {
@@ -30,6 +30,9 @@ namespace ETL.API
                     Version = "v1"
                 });
             });
+
+            services.AddScoped<IHtmlExtractor, HtmlExtractor>();
+            services.AddScoped<IHtmlTransformer, HtmlTransformer>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
