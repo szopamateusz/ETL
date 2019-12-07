@@ -1,4 +1,7 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using ETL.API.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -13,7 +16,29 @@ namespace ETL.API.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> GetReviews()
         {
-            return Ok();
+            var reviews = new List<Review>
+            {
+                new Review
+                {
+                    ReviewerName = "Mateusz",
+                    ReviewTitle = "Bad product",
+                    ProductRating = "2 of 5 stars",
+                    ReviewDate = DateTime.Today,
+                    ReviewRating = "One person",
+                    ReviewText = "abcdefghijklmnopqrstuwvxyz",
+                    ReviewComments = new List<ReviewComment>
+                    {
+                        new ReviewComment
+                        {
+                            ReviewTime = "2 days ago",
+                            UserName = "Monika",
+                            Comment = "abcdef"
+                        }
+                    }
+                }
+            };
+
+            return Ok(reviews);
         }
 
         [HttpPost("extract")]
