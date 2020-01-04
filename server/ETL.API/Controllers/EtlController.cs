@@ -1,24 +1,30 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.Net.Mime;
 using System.Threading.Tasks;
+using ETL.API.Data;
 using ETL.API.Models;
 using ETL.API.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace ETL.API.Controllers
 {
     [Route("/etl/api")]
     [ApiController]
+    [Produces(MediaTypeNames.Application.Json)]
     public class EtlController : ControllerBase
     {
         private readonly IHtmlExtractor _htmlExtractor;
         private readonly IHtmlTransformer _htmlTransformer;
-
-        public EtlController(IHtmlExtractor htmlExtractor, IHtmlTransformer htmlTransformer)
+        private readonly IHtmlLoader _htmlLoader;
+        private readonly ReviewsDbContext _reviewsDbContext;
+        public EtlController(IHtmlExtractor htmlExtractor, IHtmlTransformer htmlTransformer, IHtmlLoader htmlLoader, ReviewsDbContext reviewsDbContext)
         {
             _htmlExtractor = htmlExtractor;
             _htmlTransformer = htmlTransformer;
+            _htmlLoader = htmlLoader;
+            _reviewsDbContext = reviewsDbContext;
         }
 
         [HttpGet]
@@ -26,57 +32,55 @@ namespace ETL.API.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> GetReviews()
         {
-            var reviews = new List<Review>
-            {
-                new Review
-                {
-                    ReviewerName = "Mateusz",
-                    ReviewTitle = "Bad product",
-                    ProductRating = "2 of 5 stars",
-                    ReviewDate = "28 Maja 2019",
-                    ReviewText = "abcdefghijklmnopqrstuwvxyz"
-                }
-            };
-
+            var reviews = await _reviewsDbContext.Reviews.ToListAsync();
+            
             return Ok(reviews);
         }
 
         [HttpPost("extract")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<IActionResult> Extract([FromBody] string url)
+        public async Task<IActionResult> Extract([FromBody]UrlModel url)
         {
-            await _htmlExtractor.Extract(url);
+            var extractResult = await _htmlExtractor.Extract(url.Url);
 
-            return Ok();
-        }
+            return Ok(extractResult);
+        } 
 
         [HttpPost("transform")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> Transform()
         {
-            await _htmlTransformer.Transform(Environment.CurrentDirectory + @"\webpage.txt");
+            var transformResult = await _htmlTransformer.Transform();
 
-            return Ok();
+            return Ok(transformResult);
         }
 
         [HttpPost("load")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> Load()
         {
-            return Ok();
+            var loadResult = await _htmlLoader.Load();
+            return Ok(loadResult);
         }
 
         [HttpPost("etl")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<IActionResult> ETL([FromBody] string url)
+        public async Task<IActionResult> ETL([FromBody]UrlModel url)
         {
-            return Ok();
+            var extractResult = await _htmlExtractor.Extract(url.Url);
+            var transformResult = await _htmlTransformer.Transform();
+            var loadResult = await _htmlLoader.Load();
+
+            string processResult = $"{extractResult}  {transformResult}  {loadResult}";
+            return Ok(processResult);
         }
 
         [HttpDelete("clear")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> Clear()
         {
+            await _reviewsDbContext.Database.ExecuteSqlRawAsync(@"TRUNCATE TABLE Reviews");
+
             return Ok();
         }
     }

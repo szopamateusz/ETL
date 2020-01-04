@@ -8,19 +8,27 @@ namespace ETL.API.Services
 {
     public interface IHtmlExtractor
     {
-        Task Extract(string url);
+        Task<string> Extract(string url);
     }
 
     public class HtmlExtractor : IHtmlExtractor
     {
-        public async Task Extract(string url)
+        public async Task<string> Extract(string url)
         {
             var htmlDocument = new HtmlWeb();
             var document = htmlDocument.Load(url);
+            try
+            {
+                await SavePageContent(document);
+                await GetNextPage(document);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                return "Unable to extract records from a page";
+            }
 
-            await SavePageContent(document);
-
-            await GetNextPage(document);
+            return "Successfully extracted records from page.";
         }
 
         private async Task SavePageContent(HtmlDocument document)
@@ -35,12 +43,22 @@ namespace ETL.API.Services
 
         private async Task GetNextPage(HtmlDocument document)
         {
-            var nextPageUrl = document.DocumentNode.SelectNodes("//link").FirstOrDefault(x => x.OuterHtml.Contains("next"))
-                ?.Attributes[1]
-                .Value;
+            try
+            {
+                var nextPage = document?.DocumentNode?.SelectNodes("//link")
+                    .FirstOrDefault(x => x.OuterHtml.Contains("next"));
+                string nextPageUrl = null;
 
-            if (nextPageUrl != null)
-                await Extract(nextPageUrl);
+                if (nextPage != null)
+                    nextPageUrl = nextPage?.Attributes[1].Value;
+
+                if (nextPageUrl != null)
+                    await Extract(nextPageUrl);
+            }
+            catch (ArgumentNullException)
+            {
+                Console.WriteLine("error occured");
+            }
         }
     }
 }

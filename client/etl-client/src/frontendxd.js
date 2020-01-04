@@ -63,7 +63,7 @@ export default class EtlApiGet extends Component {
     }
 
     apiEtl = (url) => {
-        axios.post("http://localhost:5000/etl/api/etl/", url,{
+        axios.post("http://localhost:5000/etl/api/etl/", {url : url},{
                 headers: {
                     'Content-Type': 'application/json;charset=utf-8',
                 }
@@ -78,7 +78,7 @@ export default class EtlApiGet extends Component {
     }
 
     apiExtract = (url) => {
-        axios.post(`http://localhost:5000/etl/api/extract`, url,{
+        axios.post(`http://localhost:5000/etl/api/extract`, {url : url},{
                 headers: {
                     'Content-Type': 'application/json;charset=utf-8',
                 }

@@ -2,6 +2,7 @@
 {
     public class Review
     {
+        public int Id { get; set; }
         public string ReviewDate { get; set; }
         public string ReviewerName { get; set; }
         public string ProductRating { get; set; }

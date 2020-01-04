@@ -11,48 +11,59 @@ namespace ETL.API.Services
 {
     public interface IHtmlTransformer
     {
-        Task Transform(string filePath);
+        Task<string> Transform();
     }
 
     public class HtmlTransformer : IHtmlTransformer
     {
-        public async Task Transform(string filePath)
+        public async Task<string> Transform()
         {
-            var doc = new HtmlDocument();
-            doc.Load(filePath);
-            var divs = doc.DocumentNode.SelectNodes("//div");
-
-            var usedNodes = divs
-                .Where(x => x.Id.Contains("customer_review-"))
-                .ToList();
-
-            var reviews = new List<Review>();
-            foreach (var usedNode in usedNodes)
+            try
             {
-                var reviewDate = usedNode.ChildNodes
-                    .FirstOrDefault(x => x.OuterHtml.Contains("data-hook=\"review-date\""))?.InnerText;
-                var reviewerName = usedNode.ChildNodes
-                    .FirstOrDefault(x => x.OuterHtml.Contains("class=\"a-profile-name\""))?.InnerText;
-                var productRating = usedNode.ChildNodes
-                    .FirstOrDefault(x => x.OuterHtml.Contains("class=\"a-icon-alt\""))?.FirstChild.InnerText;
-                var reviewTitle = usedNode.ChildNodes
-                    .FirstOrDefault(x => x.OuterHtml.Contains("data-hook=\"review-title\""))?.ChildNodes[2].InnerText;
-                var reviewText = usedNode.ChildNodes
-                    .FirstOrDefault(x => x.OuterHtml.Contains("data-hook=\"review-body\""))?.InnerText;
+                var doc = new HtmlDocument();
+                doc.Load(Environment.CurrentDirectory + @"\webpage.txt");
+                var divs = doc.DocumentNode.SelectNodes("//div");
 
-                reviews.Add(new Review
+                var usedNodes = divs
+                    .Where(x => x.Id.Contains("customer_review-"))
+                    .ToList();
+
+                var reviews = new List<Review>();
+                foreach (var usedNode in usedNodes)
                 {
-                    ReviewDate = reviewDate,
-                    ReviewerName = reviewerName,
-                    ProductRating = productRating,
-                    ReviewTitle = reviewTitle,
-                    ReviewText = reviewText,
-                });
+                    var reviewDate = usedNode.ChildNodes
+                        .FirstOrDefault(x => x.OuterHtml.Contains("data-hook=\"review-date\""))?.InnerText;
+                    var reviewerName = usedNode.ChildNodes
+                        .FirstOrDefault(x => x.OuterHtml.Contains("class=\"a-profile-name\""))?.InnerText;
+                    var productRating = usedNode.ChildNodes
+                        .FirstOrDefault(x => x.OuterHtml.Contains("class=\"a-icon-alt\""))?.FirstChild.InnerText;
+                    var reviewTitle = usedNode.ChildNodes
+                        .FirstOrDefault(x => x.OuterHtml.Contains("data-hook=\"review-title\""))?.ChildNodes[2]
+                        .InnerText;
+                    var reviewText = usedNode.ChildNodes
+                        .FirstOrDefault(x => x.OuterHtml.Contains("data-hook=\"review-body\""))?.InnerText;
+
+                    reviews.Add(new Review
+                    {
+                        ReviewDate = reviewDate,
+                        ReviewerName = reviewerName,
+                        ProductRating = productRating,
+                        ReviewTitle = reviewTitle,
+                        ReviewText = reviewText
+                    });
+                }
+
+                var serializedData = JsonConvert.SerializeObject(reviews);
+
+                await File.WriteAllTextAsync(Environment.CurrentDirectory + @"\transformed.txt", serializedData);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                return "There was an issue during transforming the reviews";
             }
 
-            var serializedData = JsonConvert.SerializeObject(reviews);
-
-            await File.WriteAllTextAsync(Environment.CurrentDirectory + @"\transformed.txt", serializedData);
+            return "Successfully transformed the reviews.";
         }
     }
 }
