@@ -1,6 +1,6 @@
 .App {
   text-align: center;
-  padding: 0;
+  padding: 0px !important;
 }
 
 .App-logo {
@@ -22,3 +22,12 @@
 .App-link {
   color: #09d3ac;
 }
+table{
+  font-size: calc(7px + 1vmin) !important;
+}
+.word-wrap {
+  word-break: break-all;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
