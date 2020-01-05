@@ -103,7 +103,7 @@ export default class EtlApiGet extends Component {
     render() {
         return (
 
-            <div>
+            <div  className="d-flex flex-column col-12 col-sm-12 col-md-10 col-lg-8 col-xl-8 flex-wrap">
                 <div className="btn-group d-flex">
                     <button type="button" onClick={this.apiGetReviews} className="btn btn-primary btn">Get Reviews</button>
                     <button type="button" onClick={this.apiTransform} className="btn btn-primary btn">Transform</button>
@@ -111,35 +111,32 @@ export default class EtlApiGet extends Component {
                     <button type="button" onClick={this.apiClear} className="btn btn-primary btn">Clear</button>
                 </div>
 
-                <form>
-                    <div className="form-group row align-items-center">
-                        <label className="col-sm-2 col-form-label">Extract</label>
-                        <div className="col-sm-8">
-                            <input type="text" onChange={this.handleOnChangeExtract} className="form-control" placeholder="http://google.com"/>
+                <form className="d-flex flex-column col-12 flex-wrap">
+                    <div className="d-flex flex-row align-items-center flex-wrap">
+                        <label className="col-12 col-sm-2 col-form-label">Extract</label>
+                        <div className="co-12  col-sm-8">
+                            <input className="col-12" type="text" onChange={this.handleOnChangeExtract} className="form-control" placeholder="http://google.com"/>
                         </div>
-                        <div className="col-sm-2">
-                            <button type="button" onClick={() => this.apiExtract(this.state.extract)} className="btn btn-primary btn">Extract</button>
+                        <div className="col-12  col-sm-2">
+                            <button className="col-12" type="button" onClick={() => this.apiExtract(this.state.extract)} className="btn btn-primary btn">Extract</button>
+                        </div>
+                    
+                    </div>
+                    <div className="d-flex flex-row align-items-center flex-wrap">
+                        <label className="col-12 col-sm-2 col-form-label">Etl</label>
+                        <div className="co-12  col-sm-8">
+                            <input className="col-12" type="text" onChange={this.handleOnChangeEtl} className="form-control" placeholder="http://google.com"/>
+                        </div>
+                        <div className="col-12  col-sm-2">
+                            <button className="col-12" type="button" onClick={() => this.apiEtl(this.state.etl)} className="btn btn-primary btn">Etl</button>
                         </div>
                     </div>
                 </form>
 
-                <form>
-                    <div className="form-group row align-items-center">
-                        <label className="col-sm-2 col-form-label">Etl</label>
-                        <div className="col-sm-8">
-                            <input type="text" onChange={this.handleOnChangeEtl} className="form-control" placeholder="http://google.com"/>
-                        </div>
-                        <div className="col-sm-2">
-                            <button type="button" onClick={() => this.apiEtl(this.state.etl)} className="btn btn-primary btn">Etl</button>
-                        </div>
-                    </div>
-                </form>
-
-                <table className="table table-dark">
+                <table className="table table-dark col-12">
                 <thead>
                     <tr>
                     <th scope="col">#</th>
-                    <th scope="col">Product Name</th>
                     <th scope="col">Date</th>
                     <th scope="col">Name</th>
                     <th scope="col">Rating</th>
@@ -151,7 +148,6 @@ export default class EtlApiGet extends Component {
                 {this.state.data.map((entry, index) =>
                     <tr key={entry.toString()}>
                         <th scope="row">{index+1}</th>
-                        <td>{entry.productName}</td>
                         <td>{entry.reviewDate}</td>
                         <td>{entry.reviewerName}</td>
                         <td>{entry.productRating}</td>

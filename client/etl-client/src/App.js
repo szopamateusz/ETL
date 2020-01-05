@@ -5,7 +5,7 @@ import './App.css';
 
 function App() {
   return (
-    <div className="App">
+    <div className="App col-12">
       <header className="App-header">
       <EtlApiGet/>
       </header>
