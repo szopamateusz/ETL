@@ -8,5 +8,6 @@
         public string ProductRating { get; set; }
         public string ReviewTitle { get; set; }
         public string ReviewText { get; set; }
+        public string ProductName { get; set; }
     }
 }

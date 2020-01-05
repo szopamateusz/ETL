@@ -39,6 +39,7 @@ export default class EtlApiGet extends Component {
         axios.delete(`http://localhost:5000/etl/api/clear`)
         .then(res => {
            console.log("Delete Clear")
+           window.location.reload();
         }).catch(error => {
             console.log(error)
         })
@@ -48,6 +49,9 @@ export default class EtlApiGet extends Component {
         axios.post(`http://localhost:5000/etl/api/load`)
         .then(res => {
            console.log("Post Load")
+           window.alert(res.data)
+           window.location.reload();
+
         }).catch(error => {
             console.log(error)
         })
@@ -57,6 +61,7 @@ export default class EtlApiGet extends Component {
         axios.post(`http://localhost:5000/etl/api/transform`)
         .then(res => {
            console.log("Post Transform")
+           window.alert(res.data)
         }).catch(error => {
             console.log(error)
         })
@@ -72,6 +77,8 @@ export default class EtlApiGet extends Component {
         .then(res => {
             res? console.log(res):
             console.log("Post Etl")
+            window.alert(res.data)
+            window.location.reload();
         }).catch(error => {
             console.log(error)
         })
@@ -86,6 +93,7 @@ export default class EtlApiGet extends Component {
         )
         .then(res => {
             res? console.log(res):
+            window.alert(res.data)
             console.log("Post Extract")
         }).catch(error => {
             console.log(error)
@@ -131,6 +139,7 @@ export default class EtlApiGet extends Component {
                 <thead>
                     <tr>
                     <th scope="col">#</th>
+                    <th scope="col">Product Name</th>
                     <th scope="col">Date</th>
                     <th scope="col">Name</th>
                     <th scope="col">Rating</th>
@@ -142,6 +151,7 @@ export default class EtlApiGet extends Component {
                 {this.state.data.map((entry, index) =>
                     <tr key={entry.toString()}>
                         <th scope="row">{index+1}</th>
+                        <td>{entry.productName}</td>
                         <td>{entry.reviewDate}</td>
                         <td>{entry.reviewerName}</td>
                         <td>{entry.productRating}</td>

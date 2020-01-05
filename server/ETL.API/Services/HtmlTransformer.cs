@@ -24,6 +24,8 @@ namespace ETL.API.Services
                 doc.Load(Environment.CurrentDirectory + @"\webpage.txt");
                 var divs = doc.DocumentNode.SelectNodes("//div");
 
+                var productName = GetProductName(doc);
+
                 var usedNodes = divs
                     .Where(x => x.Id.Contains("customer_review-"))
                     .ToList();
@@ -49,7 +51,8 @@ namespace ETL.API.Services
                         ReviewerName = reviewerName,
                         ProductRating = productRating,
                         ReviewTitle = reviewTitle,
-                        ReviewText = reviewText
+                        ReviewText = reviewText,
+                        ProductName = productName
                     });
                 }
 
@@ -64,6 +67,16 @@ namespace ETL.API.Services
             }
 
             return "Successfully transformed the reviews.";
+        }
+
+        private string GetProductName(HtmlDocument document)
+        {
+            var link = document?.DocumentNode?.SelectNodes("//link")
+                .FirstOrDefault(x => x.OuterHtml.Contains("next"))?.Attributes[1].Value;
+
+            var url = new Uri(link);
+
+            return url.Segments[1].Replace("-", " ");
         }
     }
 }

@@ -3,14 +3,16 @@ using ETL.API.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace ETL.API.Migrations
 {
     [DbContext(typeof(ReviewsDbContext))]
-    partial class ReviewsDbContextModelSnapshot : ModelSnapshot
+    [Migration("20200105124810_AddProductName")]
+    partial class AddProductName
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
