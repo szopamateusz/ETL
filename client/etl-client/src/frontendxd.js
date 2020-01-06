@@ -137,8 +137,9 @@ export default class EtlApiGet extends Component {
                 <thead>
                     <tr>
                     <th scope="col">#</th>
+                    <th scope="col">Product Name</th>
                     <th scope="col">Date</th>
-                    <th scope="col">Name</th>
+                    <th scope="col">Reviewer Name</th>
                     <th scope="col">Rating</th>
                     <th scope="col">Title</th>
                     <th scope="col">Text</th>
@@ -148,6 +149,7 @@ export default class EtlApiGet extends Component {
                 {this.state.data.map((entry, index) =>
                     <tr key={entry.toString()}>
                         <th scope="row">{index+1}</th>
+                        <td >{entry.productName}</td>
                         <td >{entry.reviewDate}</td>
                         <td >{entry.reviewerName}</td>
                         <td >{entry.productRating}</td>
